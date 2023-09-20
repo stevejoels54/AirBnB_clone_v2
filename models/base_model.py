@@ -20,7 +20,6 @@ class BaseModel:
         """Instatntiates a new model"""
         if not kwargs:
             self.id = str(uuid.uuid4())
-            storage.new(self)
             self.save()
         else:
             for key, value in kwargs.items():
