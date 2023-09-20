@@ -20,7 +20,7 @@ class BaseModel:
         """Instatntiates a new model"""
         if not kwargs:
             self.id = str(uuid.uuid4())
-            self.save()
+            self.created_at = datetime.utcnow()
         else:
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -31,7 +31,7 @@ class BaseModel:
                         setattr(self, key, value)
             if 'id' not in kwargs:
                 self.id = str(uuid.uuid4())
-            self.updated_at = datetime.now()
+            self.updated_at = datetime.utcnow()
 
     def __str__(self):
         """Returns a string representation of the instance"""

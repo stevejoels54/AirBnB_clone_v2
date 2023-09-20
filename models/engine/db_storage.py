@@ -1,13 +1,13 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 from models.city import City
 from models.state import State
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from models.user import User
-import os
 
 
 class DBStorage:
