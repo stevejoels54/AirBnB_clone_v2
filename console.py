@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -55,24 +55,35 @@ class HBNBCommand(cmd.Cmd):
         """Usage: create <class> <key 1>=<value 1>
         Create new class instance with given keys, values and print id
         """
-        if not args:
+        try:
+            if not args:
+                raise SyntaxError()
+            line_list = args.split(" ")
+
+            kwargs = {}
+            for i in range(1, len(line_list)):
+                key, value = tuple(line_list[i].split("="))
+                if value[0] == '"':
+                    value = value.strip('"').replace("_", " ")
+                else:
+                    try:
+                        value = eval(value)
+                    except (SyntaxError, NameError):
+                        continue
+                kwargs[key] = value
+
+            if kwargs == {}:
+                obj = eval(line_list[0])()
+            else:
+                obj = eval(line_list[0])(**kwargs)
+                storage.new(obj)
+            print(obj.id)
+            obj.save()
+
+        except SyntaxError:
             print("** class name missing **")
-            return
-        args = args.split(' ')
-        if args[0] not in HBNBCommand.classes:
+        except NameError:
             print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args[0]]()
-        for arg in args[1:]:
-            arg = arg.split('=')
-            if len(arg) != 2:
-                continue
-            key, value = arg
-            if key in HBNBCommand.types:
-                value = HBNBCommand.types[key](value)
-            setattr(new_instance, key, value)
-        new_instance.save()
-        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
